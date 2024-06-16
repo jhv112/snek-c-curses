@@ -1,1 +1,1 @@
-gcc -s snek.c -o snek.exe
+gcc -s snek-c-curses.c -o snek-c-curses.exe -lpdcurses
