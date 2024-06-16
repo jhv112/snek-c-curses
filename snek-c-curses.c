@@ -2,6 +2,18 @@
  * CLI Snake Game *
  ******************/
 
+/* Requires: PDCurses
+	This is a simple game of Snake.
+	The controls are WASD or arrow keys to move.
+	The objectives are: to eat food ('o') to grow; and to avoid the edges and
+	 avoid biting yourself.
+
+	The game's size can be passed as command-line arguments to the program
+	 (minimum and maximum values are currently set to 2 and 80, respectively).
+	When no arguments are given, the default behaviour is that the game's size
+	 is the CLI's current window size.
+*/ 
+
 /* Known bugs:
         Small memory leak after first death.
         Small window size leads to larger-than-expected memory allocation.
@@ -185,18 +197,14 @@ void resetUnderBoard(int **board, int x, int y){
 
 /* Initialises game onto screen. */
 void initBoard(WINDOW *board, int x, int y){
-	/*char *line = (char *) malloc((x+1) * sizeof(char));
+	char *line = (char *) malloc((x+1) * sizeof(char));
 	memset(line , '.', x);
 	line[x] = '\0';
 
 	int j;
 	for(j = 0; j < y; j++)
 		mvwaddnstr(board, j, 0, line, x);
-	free(line);*/
-	int i, j;
-	for(j = 0; j < y; j++)
-		for(i = 0; i < x; i++)
-			mvwaddch(board, j, i, '.');
+	free(line);
 	wrefresh(board);
 }
 
