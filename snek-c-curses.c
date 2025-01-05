@@ -215,23 +215,24 @@ void title(WINDOW *board, int x, int y) {
 /* Initialises internal representation of the game. */
 void initUnderBoard(int ***board, int x, int y) {
     *board = (int **) malloc(y * sizeof(int *));
+    int *tiles = (int *) calloc(x * y, sizeof(int));
 
     for(int j = 0; j < y; j++)
-        (*board)[j] = (int *) calloc(x, sizeof(int));
+        (*board)[j] = tiles + (j * x);
 }
 
 /* Resets internal representation of the game. */
 void resetUnderBoard(int **board, int x, int y) {
-    for(int j = 0; j < y; j++)
-        for(int i = 0; i < x; i++)
-            board[j][i] = 0;
+    // We can only do this, because we know, that underboard memory is
+    // contiguous
+    memset(*board, 0, x * y * sizeof(int));
 }
 
 /* Initialises game onto screen. */
 void initBoard(WINDOW *board, int x, int y) {
     char *line = (char *) malloc((x+1) * sizeof(char));
 
-    memset(line , '.', x);
+    memset(line, '.', x);
 
     line[x] = '\0';
 
