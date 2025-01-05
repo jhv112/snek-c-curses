@@ -228,18 +228,26 @@ void resetUnderBoard(int **board, int x, int y) {
     memset(*board, 0, x * y * sizeof(int));
 }
 
+char *initBoardLine(int lineLength) {
+    char *line = (char *)malloc((lineLength+1) * sizeof(char));
+
+    memset(line, SPACE_CHAR, lineLength);
+
+    line[lineLength] = '\0';
+
+    return line;
+}
+
 /* Initialises game onto screen. */
 void initBoard(WINDOW *board, int x, int y) {
-    char *line = (char *) malloc((x+1) * sizeof(char));
+    static char *line = NULL;
 
-    memset(line, SPACE_CHAR, x);
-
-    line[x] = '\0';
+    if (line == NULL)
+        line = initBoardLine(x);
 
     for(int j = 0; j < y; j++)
         mvwaddnstr(board, j, 0, line, x);
 
-    free(line);
     wrefresh(board);
 }
 
