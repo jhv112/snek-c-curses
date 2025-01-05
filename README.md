@@ -16,9 +16,6 @@ Building for and running on UNIX/Linux is untested.
 > unable to install NCurses (the original implementation of Curses used by the
 > program) on my current machine; hence, I've rewritten it slightly, to use
 > PDCurses instead.
-> This has for some reason introduced a visible bug in the title screen, which I
-> cannot attest existed in the 2018 NCurses build.
-> Needless to say, it's an area of further investigation.
 
 ## Running the program
 

@@ -358,6 +358,8 @@ void shrinkSnek(
 
 /* Moves the snake.
    Includes food, bite and out-of-bounds detection.
+
+   @return `-1` if game-over condition met; else `0`
 */
 int moveSnek(WINDOW *board, int **underBoard, struct Snek *snek, int x, int y) {
     // New snake head co-ords are first calculated
