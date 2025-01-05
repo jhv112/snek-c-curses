@@ -1,1 +1,1 @@
-gcc -std=c99 -s snek-c-curses.c -o snek-c-curses.exe -lpdcurses
+gcc -std=c17 -Werror -Wall -Wextra -s snek-c-curses.c -o snek-c-curses.exe -lpdcurses

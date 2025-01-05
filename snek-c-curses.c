@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 
         // Game loop (without resets)
         while(kb != ESC) {
-            if((kb = wgetch(board)) != ERR)
+            if((kb = wgetch(board)) != (chtype)ERR)
                 changeSnekDirection(snek, kb);
 
             // Game logic in here
@@ -216,16 +216,14 @@ void title(WINDOW *board, int x, int y) {
 void initUnderBoard(int ***board, int x, int y) {
     *board = (int **) malloc(y * sizeof(int *));
 
-    int i, j;
-    for(j = 0; j < y; j++)
+    for(int j = 0; j < y; j++)
         (*board)[j] = (int *) calloc(x, sizeof(int));
 }
 
 /* Resets internal representation of the game. */
 void resetUnderBoard(int **board, int x, int y) {
-    int i, j;
-    for(j = 0; j < y; j++)
-        for(i = 0; i < x; i++)
+    for(int j = 0; j < y; j++)
+        for(int i = 0; i < x; i++)
             board[j][i] = 0;
 }
 
@@ -237,8 +235,7 @@ void initBoard(WINDOW *board, int x, int y) {
 
     line[x] = '\0';
 
-    int j;
-    for(j = 0; j < y; j++)
+    for(int j = 0; j < y; j++)
         mvwaddnstr(board, j, 0, line, x);
 
     free(line);
@@ -317,7 +314,6 @@ void initSnek(
     integer in the internal representation that is bigger than 0.
 */
 void growSnek(
-    WINDOW *board,
     int **underBoard,
     struct Snek *snek,
     int x,
@@ -325,9 +321,8 @@ void growSnek(
 ) {
     (snek->length)++;
 
-    int i, j;
-    for(j = 0; j < y; j++)
-        for(i = 0; i < x; i++)
+    for(int j = 0; j < y; j++)
+        for(int i = 0; i < x; i++)
             if(underBoard[j][i] > 0)
                 underBoard[j][i]++;
 }
@@ -339,13 +334,11 @@ void growSnek(
 void shrinkSnek(
     WINDOW *board,
     int **underBoard,
-    struct Snek *snek,
     int x,
     int y
 ) {
-    int i, j;
-    for(j = 0; j < y; j++)
-        for(i = 0; i < x; i++) {
+    for(int j = 0; j < y; j++)
+        for(int i = 0; i < x; i++) {
             if(underBoard[j][i] > 0)
                 underBoard[j][i]--;
 
@@ -385,11 +378,11 @@ int moveSnek(WINDOW *board, int **underBoard, struct Snek *snek, int x, int y) {
     if(mvwinch(board, snek->y, snek->x) == '#')
         return -1;
 
-    shrinkSnek(board, underBoard, snek, x, y);
+    shrinkSnek(board, underBoard, x, y);
 
     // Food
     if(mvwinch(board, snek->y, snek->x) == 'o')
-        growSnek(board, underBoard, snek, x, y);
+        growSnek(underBoard, snek, x, y);
 
     // Snake head is moved within game and internal representation
     underBoard[snek->y][snek->x] = snek->length;
