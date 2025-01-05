@@ -28,13 +28,13 @@
 #include <string.h>
 #include <curses.h>
 
-#define MAXSCREENWIDTH  80
-#define MAXSCREENHEIGHT 80
-#define DEFAULTSCREENWIDTH  20
-#define DEFAULTSCREENHEIGHT 20
 #define REFRESHRATE 50
 
 #define ESC 0x1B
+
+#define SPACE_CHAR '.'
+#define SNEK_CHAR '#'
+#define FOOD_CHAR 'o'
 
 #define LIMIT(a, b, c) ((b) < (a) ? (a) : ((b) > (c) ? (c) : (b)))
 
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
     // Declaring variables for window size, keyboard, internal representation
     //  and the snake's head.
     int screenWidth, screenHeight;
-    chtype kb = '0';
+    chtype kb = -1;
     int **underBoard;
     struct Snek snekHead = {0, 0, 0, '\0'};
     struct Snek *snek = &snekHead;
@@ -232,7 +232,7 @@ void resetUnderBoard(int **board, int x, int y) {
 void initBoard(WINDOW *board, int x, int y) {
     char *line = (char *) malloc((x+1) * sizeof(char));
 
-    memset(line, '.', x);
+    memset(line, SPACE_CHAR, x);
 
     line[x] = '\0';
 
@@ -267,13 +267,13 @@ void placeFood(WINDOW *board, int x, int y) {
     int i, j;
     for(j = 0; j < y; j++)
         for(i = 0; i < x; i++)
-            if(mvwinch(board, j, i) == 'o')
+            if(mvwinch(board, j, i) == FOOD_CHAR)
                 return;
 
-    while(mvwinch(board, j = numGen(y-1), i = numGen(x-1)) != '.')
+    while(mvwinch(board, j = numGen(y-1), i = numGen(x-1)) != SPACE_CHAR)
         ;
 
-    mvwaddch(board, j, i, 'o');
+    mvwaddch(board, j, i, FOOD_CHAR);
 }
 
 /* Game over screen; includes exit. */
@@ -305,7 +305,7 @@ void initSnek(
     snek->length = 1;
     snek->dir = 'U';
 
-    mvwaddch(board, snek->y, snek->x, '#');
+    mvwaddch(board, snek->y, snek->x, SNEK_CHAR);
 
     underBoard[snek->y][snek->x] = snek->length;
 }
@@ -343,8 +343,8 @@ void shrinkSnek(
             if(underBoard[j][i] > 0)
                 underBoard[j][i]--;
 
-            if(mvwinch(board, j, i) == '#' && underBoard[j][i] < 1)
-                mvwaddch(board, j, i, '.');
+            if(mvwinch(board, j, i) == SNEK_CHAR && underBoard[j][i] < 1)
+                mvwaddch(board, j, i, SPACE_CHAR);
         }
 }
 
@@ -376,19 +376,19 @@ int moveSnek(WINDOW *board, int **underBoard, struct Snek *snek, int x, int y) {
         return -1;
 
     // Bite
-    if(mvwinch(board, snek->y, snek->x) == '#')
+    if(mvwinch(board, snek->y, snek->x) == SNEK_CHAR)
         return -1;
 
     shrinkSnek(board, underBoard, x, y);
 
     // Food
-    if(mvwinch(board, snek->y, snek->x) == 'o')
+    if(mvwinch(board, snek->y, snek->x) == FOOD_CHAR)
         growSnek(underBoard, snek, x, y);
 
     // Snake head is moved within game and internal representation
     underBoard[snek->y][snek->x] = snek->length;
 
-    mvwaddch(board, snek->y, snek->x, '#');
+    mvwaddch(board, snek->y, snek->x, SNEK_CHAR);
 
     return 0;
 }
