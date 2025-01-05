@@ -44,7 +44,7 @@ struct Snek{
     int x;
     int y;
     int length;
-    char dir;
+    enum Direction {UP, DOWN, LEFT, RIGHT} dir;
 };
 
 void setxy(
@@ -311,7 +311,7 @@ void initSnek(
     snek->x = x>>1;
     snek->y = y>>1;
     snek->length = 1;
-    snek->dir = 'U';
+    snek->dir = UP;
 
     mvwaddch(board, snek->y, snek->x, SNEK_CHAR);
 
@@ -362,19 +362,19 @@ void shrinkSnek(
 int moveSnek(WINDOW *board, int **underBoard, struct Snek *snek, int x, int y) {
     // New snake head co-ords are first calculated
     switch(snek->dir) {
-        case 'U':
+        case UP:
             --(snek->y);
             break;
 
-        case 'D':
+        case DOWN:
             ++(snek->y);
             break;
 
-        case 'L':
+        case LEFT:
             --(snek->x);
             break;
 
-        case 'R':
+        case RIGHT:
             ++(snek->x);
             break;
     }
@@ -405,23 +405,23 @@ int moveSnek(WINDOW *board, int **underBoard, struct Snek *snek, int x, int y) {
 void changeSnekDirection(struct Snek *snek, chtype c) {
     switch(c) {
         case KEY_UP: case 'W': case 'w':
-            if(snek->dir == 'L' || snek->dir == 'R')
-                snek->dir = 'U';
+            if(snek->dir == LEFT || snek->dir == RIGHT)
+                snek->dir = UP;
             break;
 
         case KEY_DOWN: case 'S': case 's':
-            if(snek->dir == 'L' || snek->dir == 'R')
-                snek->dir = 'D';
+            if(snek->dir == LEFT || snek->dir == RIGHT)
+                snek->dir = DOWN;
             break;
 
         case KEY_LEFT: case 'A': case 'a':
-            if(snek->dir == 'U' || snek->dir == 'D')
-                snek->dir = 'L';
+            if(snek->dir == UP || snek->dir == DOWN)
+                snek->dir = LEFT;
             break;
 
         case KEY_RIGHT: case 'D': case 'd':
-            if(snek->dir == 'U' || snek->dir == 'D')
-                snek->dir = 'R';
+            if(snek->dir == UP || snek->dir == DOWN)
+                snek->dir = RIGHT;
             break;
     }
 }
